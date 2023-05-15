@@ -1,8 +1,9 @@
-from datetime import  date
+import datetime
 import random
 import joblib
 import numpy as np
 from fastapi import FastAPI, HTTPException
+from pydantic.schema import date
 from sklearn.preprocessing import PolynomialFeatures
 import requests
 import json
@@ -27,8 +28,8 @@ async def predict(ref_code: str):
     # else:
     #     id = random.randint(11, 20)
 
-    # response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={}, proxies=PROXIES)
-    response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={})
+    response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={}, proxies=PROXIES)
+    # response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={})
     if response.status_code >= 400:
         raise HTTPException(status_code=400)
 
@@ -42,28 +43,25 @@ async def predict(ref_code: str):
             "id": 0,
             "torqueForeseen": predict[0],
             "torqueReal": data_product["torque"],
-            "creationDate": "2023-05-13T20:38:23.440Z",
-            "idStationProduct": 3
+            "creationDate": json.dumps(datetime.datetime.now(), default=str).replace(' ', 'T').replace('"', ""),
+            "idStationProduct": 3,
            }
-
-    data = {
-        "id": 0,
-        "torqueForeseen": 90.00,
-        "torqueReal": 87.00,
-        "creationDate": "2023-05-13T20:56:43.059Z",
-        "idStationProduct": 3,
-
-    }
+    # json.dumps(datetime.datetime.now(), default=str).replace(" ", "T")
 
     headers = {
         'Content-type': 'application/json',
         'Accept': 'application/json'
     }
-    # response = requests.post(API_URL + f"/Story/register", json=json.dumps(data), proxies=PROXIES)
-    response = requests.post(API_URL + f"/Story/register", json=data, headers=headers)
 
-    # print(response.status_code)
-    # print(response.json())
+
+    print(data['creationDate'])
+
+    response = requests.post(API_URL + f"/Story/register", json=data, headers=headers,
+                             proxies=PROXIES)
+    # response = requests.post(API_URL + f"/Story/register", json=data, headers=headers)
+
+    print(response.status_code)
+    print(response.json())
     if response.status_code == 200:
         return True
 
