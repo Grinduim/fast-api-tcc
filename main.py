@@ -23,13 +23,13 @@ PROXIES = {"http": "http://grv2ct:Vbg25012023@@rb-proxy-ca1.bosch.com:8080",
 async def predict(ref_code: str):
     id = 3
     print(ref_code)
-    # if ref_code == "a":
+    # if ref_code == "":
     #     id = random.randint(0, 10)
     # else:
     #     id = random.randint(11, 20)
 
-    response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={}, proxies=PROXIES)
-    # response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={})
+    # response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={}, proxies=PROXIES)
+    response = requests.get(f"{API_URL}/StationProduct/getStationProduct/{id}", headers={})
     if response.status_code >= 400:
         raise HTTPException(status_code=400)
 
@@ -56,9 +56,9 @@ async def predict(ref_code: str):
 
     print(data['creationDate'])
 
-    response = requests.post(API_URL + f"/Story/register", json=data, headers=headers,
-                             proxies=PROXIES)
-    # response = requests.post(API_URL + f"/Story/register", json=data, headers=headers)
+    # response = requests.post(API_URL + f"/Story/register", json=data, headers=headers,
+    #                          proxies=PROXIES)
+    response = requests.post(API_URL + f"/Story/register", json=data, headers=headers)
 
     print(response.status_code)
     print(response.json())
