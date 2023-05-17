@@ -44,7 +44,7 @@ async def predict(ref_code: str):
             "torqueForeseen": predict[0],
             "torqueReal": data_product["torque"],
             "creationDate": json.dumps(datetime.datetime.now(), default=str).replace(' ', 'T').replace('"', ""),
-            "idStationProduct": 3,
+            "idStationProduct": id,
            }
     # json.dumps(datetime.datetime.now(), default=str).replace(" ", "T")
 
@@ -61,7 +61,7 @@ async def predict(ref_code: str):
     response = requests.post(API_URL + f"/Story/register", json=data, headers=headers)
 
     print(response.status_code)
-    print(response.json())
+    print(response)
     if response.status_code == 200:
         return True
 
