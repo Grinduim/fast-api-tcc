@@ -21,7 +21,7 @@ PROXIES = {"http": "http://grv2ct:Vbg25012023@@rb-proxy-ca1.bosch.com:8080",
 
 @app.get("/data/{ref_code}")
 async def predict(ref_code: str):
-    id = 3
+    id = random.randint(4, 19)
     print(ref_code)
     # if ref_code == "":
     #     id = random.randint(0, 10)
