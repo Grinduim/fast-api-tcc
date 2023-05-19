@@ -40,7 +40,8 @@ async def predict(ref_code: str):
     predict = model_clone.predict(np.array(data_product["angulo"]).reshape(-1, 1))
 
     predict = format_result(predict, data_product)
-
+    print(predict)
+    print(data_product["torque"])
 
     data = {
             "id": 0,
