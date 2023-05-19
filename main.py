@@ -7,6 +7,7 @@ from pydantic.schema import date
 from sklearn.preprocessing import PolynomialFeatures
 import requests
 import json
+from tools import  format_result
 
 model_clone = joblib.load('model.pkl')
 
@@ -17,6 +18,8 @@ API_URL = "https://dmtload.azurewebsites.net"
 PROXIES = {"http": "http://grv2ct:Vbg25012023@@rb-proxy-ca1.bosch.com:8080",
            "https": "http://grv2ct:Vbg25012023@@rb-proxy-ca1.bosch.com:8080"
            }
+
+
 
 
 @app.get("/data/{ref_code}")
@@ -36,12 +39,12 @@ async def predict(ref_code: str):
     data_product = response.json()
     predict = model_clone.predict(np.array(data_product["angulo"]).reshape(-1, 1))
 
-    if predict >= 80:
-        predict = predict * 0.87
+    predict = format_result(predict, data_product)
+
 
     data = {
             "id": 0,
-            "torqueForeseen": predict[0],
+            "torqueForeseen": predict,
             "torqueReal": data_product["torque"],
             "creationDate": json.dumps(datetime.datetime.now(), default=str).replace(' ', 'T').replace('"', ""),
             "idStationProduct": id,
@@ -52,9 +55,6 @@ async def predict(ref_code: str):
         'Content-type': 'application/json',
         'Accept': 'application/json'
     }
-
-
-    print(data['creationDate'])
 
     # response = requests.post(API_URL + f"/Story/register", json=data, headers=headers,
     #                          proxies=PROXIES)
